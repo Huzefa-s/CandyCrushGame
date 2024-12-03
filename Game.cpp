@@ -9,38 +9,32 @@ Game::Game()
     background.setTexture(tBackground);
     candy.setTexture(tcandy);
     specialCandy.setTexture(tspecialCandy);
-    // Load font
+
     if (!Font.loadFromFile("fonts/arial.ttf")) {
-        // Handle error loading font
     }
 
-    // Initialize scoreText
+
     scoreText.setFont(Font);
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(sf::Color::Black);
     scoreText.setPosition(app.getSize().x - 200, 10);
 
-    // Initialize movesText
     movesText.setFont(Font);
     movesText.setCharacterSize(24);
     movesText.setFillColor(sf::Color::Black);
     movesText.setPosition(scoreText.getPosition().x+ 75, scoreText.getPosition().y + 30);
 
-
-    // Initialize startScreenText
     startScreenText.setFont(Font);
     startScreenText.setCharacterSize(30);
     startScreenText.setFillColor(sf::Color::Black);
     startScreenText.setString("Select Level:\nPress 1, 2, or 3 to start");
     startScreenText.setPosition(app.getSize().x / 2 - startScreenText.getLocalBounds().width / 2, app.getSize().y / 2 - startScreenText.getLocalBounds().height / 2);
 
-    // Initialize levelText
     levelText.setFont(Font);
     levelText.setCharacterSize(24);
     levelText.setFillColor(sf::Color::Black);
     levelText.setPosition(10, 40);
 
-    // Initialize final score text
     finalScoreText.setFont(Font);
     finalScoreText.setCharacterSize(40);
     finalScoreText.setFillColor(sf::Color::Black);
@@ -63,23 +57,23 @@ void Game::processEvents() {
             app.close();
         }
 
-        if (gameState == 0) { // Start Screen
+        if (gameState == 0) { 
             if (e.type == sf::Event::KeyPressed) {
                 if (e.key.code == sf::Keyboard::Num1) {
                     selectedLevel = 1;
-                    movesLeft = 10; // Set moves for level 1
-                    gameState = 1; // Transition to Gameplay
+                    movesLeft = 10; 
+                    gameState = 1; 
                 } else if (e.key.code == sf::Keyboard::Num2) {
                     selectedLevel = 2;
-                    movesLeft = 15; // Set moves for level 2
-                    gameState = 1; // Transition to Gameplay
+                    movesLeft = 15; 
+                    gameState = 1; 
                 } else if (e.key.code == sf::Keyboard::Num3) {
                     selectedLevel = 3;
-                    movesLeft = 20; // Set moves for level 3
-                    gameState = 1; // Transition to Gameplay
+                    movesLeft = 20; 
+                    gameState = 1; 
                 }
             }
-        } else if (gameState == 1) { // Gameplay
+        } else if (gameState == 1) {
             if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left) {
                 if (!isSwap && !isMoving) click++;
                 sf::Vector2i pos = sf::Mouse::getPosition(app) - sf::Vector2i(48, 24);
@@ -108,11 +102,10 @@ void Game::processEvents() {
 }
 
 void Game::update() {
-     if (gameState == 1) { // Gameplay
+     if (gameState == 1) { 
         if (movesLeft <= 0) {
-            // Transition to Game Over state
             finalScoreText.setString("Game Over!\nFinal Score: " + std::to_string(score));
-            gameState = 2; // Move to Game Over state
+            gameState = 2; 
             return;
         }
 
@@ -121,16 +114,12 @@ void Game::update() {
 for (int i = 1; i <= 8; i++) {
     for (int j = 1; j <= 8; j++) {
         Candy& p = board.getCandy(i, j);
-        if (p.match > 0) { // Check if there's a match
-            // Assign points based on match size
-            if (p.match == 3) matchPoints += 10;  // 3 candies = 10 points
-            else if (p.match == 4) matchPoints += 20; // 4 candies = 20 points
-            else if (p.match >= 5) matchPoints += 30; // 5+ candies = 30 points
+        if (p.match > 0) { 
+            if (p.match == 3) matchPoints += 10;  
         }
     }
 }
 
-    // Add the calculated points to the total score
     score += matchPoints;
 
 
@@ -170,37 +159,33 @@ for (int i = 1; i <= 8; i++) {
 
     if (!isMoving) board.updateBoard();}
 
-    if (gameState == 2) { // Game Over
-        // Wait 3 seconds and return to the start screen
+    if (gameState == 2) {
         sf::sleep(sf::seconds(3));
         resetGame();
-        gameState = 0; // Return to Start Screen
+        gameState = 0;
     }
 }
 
 void Game::draw() {
     app.clear();
 
-    if (gameState == 0) { // Start Screen
+    if (gameState == 0) {
         app.draw(background);
         app.draw(startScreenText);
 
-    } else if (gameState == 1) { // Gameplay
-        // Draw the game board and UI elements like score and moves
+    } else if (gameState == 1) {
         app.draw(background);
         board.draw(app, candy, specialCandy);
 
-        // Draw score and moves
         scoreText.setString("Score: " + std::to_string(score));
         scoreText.setPosition(app.getSize().x - scoreText.getLocalBounds().width - 10, 10);
         app.draw(scoreText);
 
         movesText.setString("Moves: " + std::to_string(movesLeft));
-        //movesText.setPosition(10, 10);
         app.draw(movesText);
-    } else if (gameState == 2) { // Game Over
+    } else if (gameState == 2) {
         app.draw(background); 
-        app.draw(finalScoreText); // Display the final score text
+        app.draw(finalScoreText); 
     }
 
     app.display();
@@ -220,22 +205,19 @@ void Game::drawGameOverScreen() {
     gameOverText.setPosition(app.getSize().x / 2 - gameOverText.getLocalBounds().width / 2, app.getSize().y / 2 - gameOverText.getLocalBounds().height / 2);
     app.draw(gameOverText);
 
-    // Wait for a few seconds, then reset to start screen
     sf::sleep(sf::seconds(3));
 
-    resetGame(); // Reset game variables and board
-    gameState = 0; // Return to Start Screen
+    resetGame(); 
+    gameState = 0; 
 }
 
 void Game::resetGame() {
-    // Reset all game variables
     score = 0;
-    movesLeft = 10; // Or reset based on the selected level
+    movesLeft = 10; 
     selectedLevel = 0;
-    gameState = 0; // Go back to Start Screen
+    gameState = 0;
 
-    // Reset board and update start screen message
-    board.reset(); // Implement this to reset the candies
+    board.reset(); 
     startScreenText.setString("Select Level:\nPress 1, 2, or 3 to start");
 }
 

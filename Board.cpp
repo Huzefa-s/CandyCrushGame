@@ -8,7 +8,7 @@ Board::Board() {
         for (int j = 1; j <= 8; j++) {
             grid[i][j].type = rand() % 6;
             grid[i][j].setPosition(j, i);
-            if (i >= 6) {
+            if (i >= 6 and i < 8) {
                 grid[i][j].isLocked = true;
             }
         }
@@ -52,11 +52,11 @@ void Board::findMatches() {
 
 void Board::clearRowAndColumn(int row, int col) {
     for (int j = 1; j <= 8; j++) {
-        grid[row][j].match++;  // Mark as matched to be destroyed
+        grid[row][j].match++;
     }
 
     for (int i = 1; i <= 8; i++) {
-        grid[i][col].match++;   // Mark as matched to be destroyed
+        grid[i][col].match++;
     }
 }
 
@@ -106,13 +106,12 @@ void Board::initializeBoard() {
         for (int j = 1; j <= 8; j++) {
             grid[i][j].row = i;
             grid[i][j].col = j;
-            grid[i][j].type = rand() % 6; // Randomize candy type (assuming 6 types of candies)
+            grid[i][j].type = rand() % 6; 
             grid[i][j].isSpecial = (rand() % 10 == 0); 
             grid[i][j].match = 0;
-            grid[i][j].fade = 255; // Reset fade effect
-            
-            // Mark the last two rows as locked
-            if (i >= 6) {
+            grid[i][j].fade = 255;
+
+            if (i >= 6 and i < 8) {
                 grid[i][j].isLocked = true;
             
             }
@@ -123,40 +122,37 @@ void Board::initializeBoard() {
 
 void Board::draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Sprite& specialCandySprite) {
     sf::Vector2i offset(48, 24);
-    for (int i = 1; i < 8; i++) { // Iterating through grid positions
+    for (int i = 1; i < 8; i++) { 
         for (int j = 1; j < 8; j++) {
             Candy& p = grid[i][j];
 
-            // Set positions for regular and special candies
             regularCandySprite.setPosition(p.x, p.y);
             specialCandySprite.setPosition(p.x, p.y);
 
-            // Check if candy is locked
             if (p.isLocked) {
-                // Apply black color tint for locked candies
-                if (p.isSpecial) {  // Special locked candy logic
-                    sf::IntRect specialRect(p.type * 50, 0, 50, 50); // Assuming 50x50 size per candy
+
+                if (p.isSpecial) {  
+                    sf::IntRect specialRect(p.type * 50, 0, 50, 50);
                     specialCandySprite.setTextureRect(specialRect);
-                    specialCandySprite.setColor(sf::Color::Black);  // Apply black tint
-                    app.draw(specialCandySprite);  // Draw special locked candy
-                } else {  // Regular locked candy logic
-                    sf::IntRect regularRect(p.type * 50, 0, 50, 50); // Assuming 50x50 size per candy
+                    specialCandySprite.setColor(sf::Color::Black);
+                    app.draw(specialCandySprite); 
+                } else {
+                    sf::IntRect regularRect(p.type * 50, 0, 50, 50);
                     regularCandySprite.setTextureRect(regularRect);
-                    regularCandySprite.setColor(sf::Color::Black);  // Apply black tint
-                    app.draw(regularCandySprite);  // Draw regular locked candy
+                    regularCandySprite.setColor(sf::Color::Black); 
+                    app.draw(regularCandySprite); 
                 }
             } else {
-                // Normal drawing logic for unlocked candies
-                if (p.isSpecial) {  // Special candy logic
-                    sf::IntRect specialRect(p.type * 50, 0, 50, 50); // Assuming 50x50 size per candy
+                if (p.isSpecial) { 
+                    sf::IntRect specialRect(p.type * 50, 0, 50, 50); 
                     specialCandySprite.setTextureRect(specialRect);
-                    specialCandySprite.setColor(sf::Color(255, 255, 255, p.fade));  // Apply fade effect
-                    app.draw(specialCandySprite);  // Draw special candy
-                } else {  // Regular candy logic
-                    sf::IntRect regularRect(p.type * 50, 0, 50, 50); // Assuming 50x50 size per candy
+                    specialCandySprite.setColor(sf::Color(255, 255, 255, p.fade)); 
+                    app.draw(specialCandySprite); 
+                } else { 
+                    sf::IntRect regularRect(p.type * 50, 0, 50, 50); 
                     regularCandySprite.setTextureRect(regularRect);
-                    regularCandySprite.setColor(sf::Color(255, 255, 255, p.fade));  // Apply fade effect
-                    app.draw(regularCandySprite);  // Draw regular candy
+                    regularCandySprite.setColor(sf::Color(255, 255, 255, p.fade)); 
+                    app.draw(regularCandySprite); 
                 }
             }
         }
@@ -165,20 +161,19 @@ void Board::draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Spri
 
 
 void Board::unlockTiles() {
-    for (int i = 6; i <= 8; i++) {  // Last two rows
+    for (int i = 1; i <= 8; i++) { 
         for (int j = 1; j <= 8; j++) {
-            // Check for adjacent cleared candies
             if (i > 1 && !grid[i - 1][j].isLocked && grid[i - 1][j].match > 0) {
-                grid[i][j].isLocked = false;  // Unlock tile
+                grid[i][j].isLocked = false;  
             }
             if (i < 8 && !grid[i + 1][j].isLocked && grid[i + 1][j].match > 0) {
-                grid[i][j].isLocked = false;  // Unlock tile
+                grid[i][j].isLocked = false; 
             }
             if (j > 1 && !grid[i][j - 1].isLocked && grid[i][j - 1].match > 0) {
-                grid[i][j].isLocked = false;  // Unlock tile
+                grid[i][j].isLocked = false;
             }
             if (j < 8 && !grid[i][j + 1].isLocked && grid[i][j + 1].match > 0) {
-                grid[i][j].isLocked = false;  // Unlock tile
+                grid[i][j].isLocked = false;
             }
         }
     }
