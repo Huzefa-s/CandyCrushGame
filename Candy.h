@@ -1,14 +1,23 @@
 #ifndef CANDY_H
 #define CANDY_H
 
+#include <SFML/Graphics.hpp>
+using namespace sf;
+
+const int tileSize = 54;
+
 class Candy {
 public:
-    Candy(int type);
-    int getType() const;
-    void setType(int type);
-
-private:
-    int type;
+    int x, y;          // Screen position
+    int col, row;      // Grid position
+    int type;          // Candy type
+    int match;         // Match counter
+    int fade;         // Transparency (used for fading)
+    bool isSpecial;
+    bool isLocked;
+    
+    Candy();
+    void setPosition(int col, int row);
 };
 
-#endif
+#endif // CANDY_H

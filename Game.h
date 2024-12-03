@@ -1,22 +1,38 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <SFML/Graphics.hpp>
 #include "Board.h"
-#include "Player.h"
 
 class Game {
 public:
-    Game(int maxMoves);
+    Game();
     void run();
 
 private:
-    Board board;
-    Player player;
-    int maxMoves;
-
+    void processEvents();
     void update();
-    void render();
-    bool isGameOver();
+    void draw();
+    void drawStartScreen();
+    void drawGameOverScreen();
+    void resetGame();
+
+    sf::RenderWindow app;
+    sf::Texture tBackground, tcandy, tspecialCandy;
+    sf::Sprite background, candy, specialCandy;
+    sf::Font Font;
+    sf::Text scoreText, movesText, startScreenText, levelText; // Single declaration for all text elements
+    sf::Text finalScoreText; // Displays the final score
+
+    Board board;
+    int click, x0, y0, x, y;
+    bool isSwap, isMoving;
+    int score;
+    int movesLeft;
+    int selectedLevel; // Track the selected level
+    int gameState;     // 0 = Start Screen, 1 = Playing, 2 = Game Over
+    bool isGameOver;         // Tracks if the game is over
+    
 };
 
-#endif
+#endif 

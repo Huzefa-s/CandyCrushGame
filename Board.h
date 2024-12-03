@@ -1,24 +1,25 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <vector>
+#include <SFML/Graphics.hpp>
 #include "Candy.h"
 
 class Board {
-public:
-    Board(int rows, int cols);
-    void initializeBoard(); // Sets up the initial board with random candies
-    bool swap(int x1, int y1, int x2, int y2); // Swaps two candies
-    bool checkMatch(); // Checks for matches of three or more candies
-    void clearMatches(); // Clears matched candies
-    void fillBoard(); // Fills empty spaces with new candies
-
 private:
-    int rows;
-    int cols;
-    std::vector<std::vector<Candy>> grid;
+    Candy grid[10][10];
 
-    bool isValidSwap(int x1, int y1, int x2, int y2); // Validates swaps
+public:
+    Board();
+    Candy& getCandy(int row, int col);
+    void clearRowAndColumn(int row, int col);
+    void swapCandies(Candy& p1, Candy& p2);
+    void findMatches();
+    void updateBoard();
+    int getScore();
+    void draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Sprite& specialCandySprite);
+    void reset();
+    void initializeBoard();
+    void unlockTiles();
 };
 
 #endif // BOARD_H
