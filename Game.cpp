@@ -14,27 +14,33 @@ Game::Game()
     }
 
 
+    // Initialize scoreText
     scoreText.setFont(Font);
     scoreText.setCharacterSize(24);
     scoreText.setFillColor(sf::Color::Black);
     scoreText.setPosition(app.getSize().x - 200, 10);
 
+    // Initialize movesText
     movesText.setFont(Font);
     movesText.setCharacterSize(24);
     movesText.setFillColor(sf::Color::Black);
     movesText.setPosition(scoreText.getPosition().x+ 75, scoreText.getPosition().y + 30);
 
+
+    // Initialize startScreenText
     startScreenText.setFont(Font);
     startScreenText.setCharacterSize(30);
     startScreenText.setFillColor(sf::Color::Black);
     startScreenText.setString("Select Level:\nPress 1, 2, or 3 to start");
     startScreenText.setPosition(app.getSize().x / 2 - startScreenText.getLocalBounds().width / 2, app.getSize().y / 2 - startScreenText.getLocalBounds().height / 2);
 
+    // Initialize levelText
     levelText.setFont(Font);
     levelText.setCharacterSize(24);
     levelText.setFillColor(sf::Color::Black);
     levelText.setPosition(10, 40);
 
+    // Initialize final score text
     finalScoreText.setFont(Font);
     finalScoreText.setCharacterSize(40);
     finalScoreText.setFillColor(sf::Color::Black);
@@ -110,7 +116,7 @@ void Game::update() {
         }
 
     int matchPoints = 0;
-
+//point logic
 for (int i = 1; i <= 8; i++) {
     for (int j = 1; j <= 8; j++) {
         Candy& p = board.getCandy(i, j);
@@ -134,6 +140,7 @@ for (int i = 1; i <= 8; i++) {
             Candy& p = board.getCandy(i, j);
             int dx = p.x - p.col * tileSize;
             int dy = p.y - p.row * tileSize;
+            //controls swapping speed
             if (dx != 0) p.x -= std::min(abs(dx), speed) * (dx / abs(dx));
             if (dy != 0) p.y -= std::min(abs(dy), speed) * (dy / abs(dy));
             if (dx != 0 || dy != 0) isMoving = true;
@@ -151,7 +158,7 @@ for (int i = 1; i <= 8; i++) {
             }
         }
     }
-
+    //swapping logic
     if (isSwap && !isMoving) {
         if (board.getScore() == 0) board.swapCandies(board.getCandy(y0, x0), board.getCandy(y, x));
         isSwap = false;
@@ -166,23 +173,27 @@ for (int i = 1; i <= 8; i++) {
     }
 }
 
+
+
 void Game::draw() {
     app.clear();
-
+    //draws start screen
     if (gameState == 0) {
         app.draw(background);
         app.draw(startScreenText);
-
+        //draws game screen
     } else if (gameState == 1) {
         app.draw(background);
         board.draw(app, candy, specialCandy);
-
+        //drawing score
         scoreText.setString("Score: " + std::to_string(score));
         scoreText.setPosition(app.getSize().x - scoreText.getLocalBounds().width - 10, 10);
         app.draw(scoreText);
-
+        //drawing moves
         movesText.setString("Moves: " + std::to_string(movesLeft));
         app.draw(movesText);
+
+        //draws gameover screen
     } else if (gameState == 2) {
         app.draw(background); 
         app.draw(finalScoreText); 
@@ -191,11 +202,13 @@ void Game::draw() {
     app.display();
 }
 
+//start screen
 void Game::drawStartScreen() {
     app.draw(background);
     app.draw(startScreenText);
 }
 
+//game over screen
 void Game::drawGameOverScreen() {
     sf::Text gameOverText;
     gameOverText.setFont(Font);
@@ -211,6 +224,7 @@ void Game::drawGameOverScreen() {
     gameState = 0; 
 }
 
+//resets game
 void Game::resetGame() {
     score = 0;
     movesLeft = 10; 

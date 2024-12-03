@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 
+//initializes board
 Board::Board() {
     
     for (int i = 1; i <= 8; i++) {
@@ -15,24 +16,31 @@ Board::Board() {
     }
 }
 
+//returns the position candy
 Candy& Board::getCandy(int row, int col) {
     return grid[row][col];
 }
 
+//Swaps two candies
 void Board::swapCandies(Candy& p1, Candy& p2) {
     std::swap(p1.col, p2.col);
     std::swap(p1.row, p2.row);
     std::swap(grid[p1.row][p1.col], grid[p2.row][p2.col]);
 }
 
+
 void Board::findMatches() {
     for (int i = 1; i <= 8; i++) {
         for (int j = 1; j <= 8; j++) {
+            
+            //Checks for vertival match
             if (grid[i][j].type == grid[i + 1][j].type && grid[i][j].type == grid[i - 1][j].type) {
                 for (int n = -1; n <= 1; n++) {
                     grid[i + n][j].match++;
                 }
             }
+
+            //Checks for horizontal match
             if (grid[i][j].type == grid[i][j + 1].type && grid[i][j].type == grid[i][j - 1].type) {
                 for (int n = -1; n <= 1; n++) {
                     grid[i][j + n].match++;
@@ -40,7 +48,7 @@ void Board::findMatches() {
             }
         }
     }
-
+    //Checks for special candy
     for (int i = 1; i <= 8; i++) {
         for (int j = 1; j <= 8; j++) {
             if (grid[i][j].isSpecial && grid[i][j].match > 0) {
@@ -50,6 +58,7 @@ void Board::findMatches() {
     }
 }
 
+//Effect of Special candy
 void Board::clearRowAndColumn(int row, int col) {
     for (int j = 1; j <= 8; j++) {
         grid[row][j].match++;
@@ -60,8 +69,9 @@ void Board::clearRowAndColumn(int row, int col) {
     }
 }
 
-
+//Falling mechanic and replaces candies after they are matched
 void Board::updateBoard() {
+     
     for (int i = 8; i > 0; i--) {
         for (int j = 1; j <= 8; j++) {
             if (grid[i][j].match) {
@@ -87,6 +97,7 @@ void Board::updateBoard() {
     }
 }
 
+//returns current score
 int Board::getScore() {
     int score = 0;
     for (int i = 1; i <= 8; i++) {
@@ -97,10 +108,12 @@ int Board::getScore() {
     return score;
 }
 
+//resets board
 void Board::reset() {
     initializeBoard();
 }
 
+//initialozes board after the 1st time
 void Board::initializeBoard() {
     for (int i = 1; i <= 8; i++) {
         for (int j = 1; j <= 8; j++) {
@@ -128,7 +141,7 @@ void Board::draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Spri
 
             regularCandySprite.setPosition(p.x, p.y);
             specialCandySprite.setPosition(p.x, p.y);
-
+            //mechanic for locked tiles
             if (p.isLocked) {
 
                 if (p.isSpecial) {  
@@ -142,7 +155,9 @@ void Board::draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Spri
                     regularCandySprite.setColor(sf::Color::Black); 
                     app.draw(regularCandySprite); 
                 }
-            } else {
+            } 
+            //for normal tiles
+            else {
                 if (p.isSpecial) { 
                     sf::IntRect specialRect(p.type * 50, 0, 50, 50); 
                     specialCandySprite.setTextureRect(specialRect);
@@ -159,7 +174,7 @@ void Board::draw(sf::RenderWindow& app, sf::Sprite& regularCandySprite, sf::Spri
     }
 }
 
-
+//unlcoks locked tiles when match is made near them
 void Board::unlockTiles() {
     for (int i = 1; i <= 8; i++) { 
         for (int j = 1; j <= 8; j++) {
